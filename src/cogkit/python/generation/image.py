@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from typing import Literal
+from typing import Literal, Union, List
 
 import numpy as np
 import torch
@@ -24,12 +24,12 @@ def generate_image(
     num_images_per_prompt: int = 1,
     output_type: Literal["pil", "pt", "np"] = "pil",
     load_type: Literal["cuda", "cpu_model_offload", "sequential_cpu_offload"] = "cpu_model_offload",
-    height: int | None = None,
-    width: int | None = None,
+    height: Union[int, None] = None,
+    width: Union[int, None] = None,
     num_inference_steps: int = 50,
     guidance_scale: float = 3.5,
-    seed: int | None = None,
-) -> list[Image.Image] | torch.Tensor | np.ndarray:
+    seed: Union[int, None] = None,
+) -> Union[List[Image.Image], torch.Tensor, np.ndarray]:
     """Generates images from a text prompt using a diffusion model pipeline.
 
     This function leverages a diffusion pipeline to create images based on a given text prompt. It supports

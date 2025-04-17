@@ -76,21 +76,31 @@ def load_data(
     else:
         assert test_dir.exists(), f"Test directory {test_dir} does not exist"
 
-    match task:
-        case GenerationMode.TextToImage:
-            if split == "train":
-                return load_dataset("imagefolder", data_dir=train_dir, split="train")
-            else:
-                return load_dataset("json", data_dir=test_dir, split="test")
+    if task == GenerationMode.TextToImage:
+        if split == "train":
+            return load_dataset("imagefolder", data_dir=train_dir, split="train")
+        else:
+            return load_dataset("json", data_dir=test_dir, split="test")
 
-        case GenerationMode.TextToVideo:
-            if split == "train":
-                return load_dataset("videofolder", data_dir=train_dir, split="train")
-            else:
-                return load_dataset("json", data_dir=test_dir, split="test")
+    elif task == GenerationMode.TextToVideo:
+        if split == "train":
+            return load_dataset("videofolder", data_dir=train_dir, split="train")
+        else:
+            return load_dataset("json", data_dir=test_dir, split="test")
 
-        case GenerationMode.ImageToVideo:
-            raise NotImplementedError("Image to video is not implemented")
+    elif task == GenerationMode.ImageToVideo:
+        raise NotImplementedError("Image to video is not implemented")
 
-        case _:
-            raise ValueError(f"Unsupported task: {task}")
+    else:
+        raise ValueError(f"Unsupported task: {task}")
+
+
+def get_task_name(task: GenerationMode) -> str:
+    if task == GenerationMode.TextToImage:
+        return "text-to-image"
+    elif task == GenerationMode.TextToVideo:
+        return "text-to-video"
+    elif task == GenerationMode.ImageToVideo:
+        return "image-to-video"
+    else:
+        raise ValueError(f"Unknown task: {task}")

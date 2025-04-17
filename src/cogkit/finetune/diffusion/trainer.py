@@ -54,37 +54,36 @@ class DiffusionTrainer(BaseTrainer):
     @override
     def prepare_dataset(self) -> None:
         # TODO: refactor later
-        match self.args.model_type:
-            case "i2v":
-                from cogkit.datasets import BaseI2VDataset, I2VDatasetWithResize
+        if self.args.model_type == "i2v":
+            from cogkit.datasets import BaseI2VDataset, I2VDatasetWithResize
 
-                dataset_cls = I2VDatasetWithResize
-                if self.args.enable_packing:
-                    dataset_cls = BaseI2VDataset
-                    raise NotImplementedError("Packing for I2V is not implemented")
+            dataset_cls = I2VDatasetWithResize
+            if self.args.enable_packing:
+                dataset_cls = BaseI2VDataset
+                raise NotImplementedError("Packing for I2V is not implemented")
 
-            case "t2v":
-                from cogkit.datasets import BaseT2VDataset, T2VDatasetWithResize
+        elif self.args.model_type == "t2v":
+            from cogkit.datasets import BaseT2VDataset, T2VDatasetWithResize
 
-                dataset_cls = T2VDatasetWithResize
-                if self.args.enable_packing:
-                    dataset_cls = BaseT2VDataset
-                    raise NotImplementedError("Packing for T2V is not implemented")
+            dataset_cls = T2VDatasetWithResize
+            if self.args.enable_packing:
+                dataset_cls = BaseT2VDataset
+                raise NotImplementedError("Packing for T2V is not implemented")
 
-            case "t2i":
-                from cogkit.datasets import (
-                    BaseT2IDataset,
-                    T2IDatasetWithResize,
-                    T2IDatasetWithPacking,
-                )
+        elif self.args.model_type == "t2i":
+            from cogkit.datasets import (
+                BaseT2IDataset,
+                T2IDatasetWithResize,
+                T2IDatasetWithPacking,
+            )
 
-                dataset_cls = T2IDatasetWithResize
-                if self.args.enable_packing:
-                    dataset_cls = BaseT2IDataset
-                    dataset_cls_packing = T2IDatasetWithPacking
+            dataset_cls = T2IDatasetWithResize
+            if self.args.enable_packing:
+                dataset_cls = BaseT2IDataset
+                dataset_cls_packing = T2IDatasetWithPacking
 
-            case _:
-                raise ValueError(f"Invalid model type: {self.args.model_type}")
+        else:
+            raise ValueError(f"Invalid model type: {self.args.model_type}")
 
         additional_args = {
             "device": self.accelerator.device,
@@ -263,13 +262,12 @@ class DiffusionTrainer(BaseTrainer):
                 if artifact_type not in ["text", "image", "video"] or artifact_value is None:
                     continue
 
-                match artifact_type:
-                    case "text":
-                        extension = "txt"
-                    case "image":
-                        extension = "png"
-                    case "video":
-                        extension = "mp4"
+                if artifact_type == "text":
+                    extension = "txt"
+                elif artifact_type == "image":
+                    extension = "png"
+                elif artifact_type == "video":
+                    extension = "mp4"
                 validation_path = self.args.output_dir / "validation_res" / f"validation-{step}"
                 validation_path.mkdir(parents=True, exist_ok=True)
                 filename = f"artifact-process{accelerator.process_index}-batch{i}.{extension}"
@@ -388,3 +386,33 @@ class DiffusionTrainer(BaseTrainer):
         raise NotImplementedError
 
     # =================================================
+
+    def _get_model_type(self) -> str:
+        if self.args.model_type == "i2v":
+            return "image-to-video"
+        elif self.args.model_type == "t2v":
+            return "text-to-video"
+        elif self.args.model_type == "t2i":
+            return "text-to-image"
+        else:
+            raise ValueError(f"Unknown model type: {self.args.model_type}")
+
+    def _get_artifact_type(self, artifact_type: str) -> str:
+        if artifact_type == "text":
+            return "text"
+        elif artifact_type == "image":
+            return "image"
+        elif artifact_type == "video":
+            return "video"
+        else:
+            raise ValueError(f"Unknown artifact type: {artifact_type}")
+
+    def _get_artifact_path(self, artifact_type: str) -> str:
+        if artifact_type == "text":
+            return "text"
+        elif artifact_type == "image":
+            return "image"
+        elif artifact_type == "video":
+            return "video"
+        else:
+            raise ValueError(f"Unknown artifact type: {artifact_type}")

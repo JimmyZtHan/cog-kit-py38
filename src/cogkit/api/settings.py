@@ -2,7 +2,7 @@
 
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Literal
+from typing import Literal, Union
 
 
 class APISettings(BaseSettings):
@@ -17,10 +17,10 @@ class APISettings(BaseSettings):
     )
 
     # cogview-4 related settings
-    cogview4_path: str | None = None
-    cogview4_transformer_path: str | None = None
-    lora_dir: str | None = None
+    cogview4_path: Union[str, None] = None
+    cogview4_transformer_path: Union[str, None] = None
+    lora_dir: Union[str, None] = None
 
     # prompt generation related settings
-    openai_api_key: str | None = None
-    openai_base_url: str | None = None
+    openai_api_key: Union[str, None] = None
+    openai_base_url: Union[str, None] = None

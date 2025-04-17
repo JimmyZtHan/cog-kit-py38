@@ -3,7 +3,7 @@
 
 import os
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Union, Optional
 
 import click
 from diffusers.utils import export_to_video
@@ -79,17 +79,17 @@ _logger = get_logger(__name__)
 def inference(
     prompt: str,
     model_id_or_path: str,
-    output_file: str | Path | None = None,
+    output_file: Union[str, Path, None] = None,
     # * additional input
-    image_file: str | Path | None = None,
+    image_file: Union[str, Path, None] = None,
     # * params for model loading
     dtype: Literal["bfloat16", "float16"] = "bfloat16",
-    transformer_path: str | None = None,
-    lora_model_id_or_path: str | None = None,
+    transformer_path: Union[str, None] = None,
+    lora_model_id_or_path: Union[str, None] = None,
     load_type: Literal["cuda", "cpu_model_offload", "sequential_cpu_offload"] = "cpu_model_offload",
     # * params for output
-    height: int | None = None,
-    width: int | None = None,
+    height: Union[int, None] = None,
+    width: Union[int, None] = None,
     num_inference_steps: int = 50,
     seed: int = 42,
 ) -> None:

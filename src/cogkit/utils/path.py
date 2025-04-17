@@ -3,13 +3,14 @@
 
 import os
 from pathlib import Path
+from typing import Union
 
 
-def resolve_path(pth: str | Path) -> Path:
+def resolve_path(pth: Union[str, Path]) -> Path:
     return Path(pth).expanduser().resolve()
 
 
-def mkdir(dir_pth: str | Path) -> Path:
+def mkdir(dir_pth: Union[str, Path]) -> Path:
     pth = resolve_path(dir_pth)
     if pth.is_file():
         err_msg = f"Path '{os.fspath(dir_pth)}' is a regular file."

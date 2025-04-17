@@ -4,6 +4,7 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from http import HTTPStatus
+from typing import Union
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -17,7 +18,7 @@ from cogkit.api.state import RequestState
 _logger = get_logger(__name__)
 
 
-def get_application(settings: APISettings | None = None) -> FastAPI:
+def get_application(settings: Union[APISettings, None] = None) -> FastAPI:
     settings = settings or APISettings()
 
     @asynccontextmanager

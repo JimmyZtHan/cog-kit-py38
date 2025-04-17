@@ -2,7 +2,7 @@
 
 
 from functools import partial
-from typing import Any, List, Literal
+from typing import Any, List, Literal, Union
 
 import numpy as np
 import torch
@@ -37,16 +37,16 @@ def generate_video(
     pipeline: DiffusionPipeline,
     num_videos_per_prompt: int = 1,
     output_type: Literal["pil", "pt", "np"] = "pil",
-    input_image: Image.Image | None = None,
+    input_image: Union[Image.Image, None] = None,
     # * params for model loading
     load_type: Literal["cuda", "cpu_model_offload", "sequential_cpu_offload"] = "cpu_model_offload",
-    height: int | None = None,
-    width: int | None = None,
-    num_frames: int | None = None,
+    height: Union[int, None] = None,
+    width: Union[int, None] = None,
+    num_frames: Union[int, None] = None,
     num_inference_steps: int = 50,
     guidance_scale: float = 6.0,
-    seed: int | None = 42,
-) -> tuple[List[Image.Image] | torch.Tensor | np.ndarray, int]:
+    seed: Union[int, None] = 42,
+) -> Union[List[Image.Image], torch.Tensor, np.ndarray]:
     """Main function for video generation, supporting both text-to-video and image-to-video generation modes.
 
     Args:

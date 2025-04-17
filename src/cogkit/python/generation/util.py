@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Literal
+from typing import Literal, Union, Tuple
+from PIL import Image
 
 from diffusers import (
     CogVideoXDPMScheduler,
@@ -102,9 +103,9 @@ def _guess_cogvideox_resolution(
 
 def guess_resolution(
     pipeline: TPipeline,
-    height: int | None = None,
-    width: int | None = None,
-) -> tuple[int, int]:
+    height: Union[int, None] = None,
+    width: Union[int, None] = None,
+) -> Tuple[int, int]:
     if isinstance(pipeline, CogviewPipline):
         return _guess_cogview_resolution(pipeline, height=height, width=width)
     if isinstance(pipeline, TVideoPipeline):
@@ -114,7 +115,10 @@ def guess_resolution(
     raise ValueError(err_msg)
 
 
-def guess_frames(pipeline: TVideoPipeline, frames: int | None = None) -> tuple[int, int]:
+def guess_frames(
+    pipeline: TVideoPipeline,
+    frames: Union[int, None] = None
+) -> Tuple[int, int]:
     if frames is None:
         frames = pipeline.transformer.config.sample_frames
 
